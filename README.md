@@ -19,3 +19,6 @@ python main.py
 ```bash
 piccolo tester run
 ```
+
+git config --global user.email "nahim.211902019@gmail.com"
+  git config --global user.name "uddinnahim"

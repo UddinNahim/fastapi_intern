@@ -1,0 +1,7 @@
+1.created docker,configure postgres engine with piccolo orm
+2.created app named academy and inside the academy created dir api,models,schemas,
+3.how to create router inside api
+4.connection pool
+5.basic crud operations
+6.learn and practise orm
+7.also try to implement in api

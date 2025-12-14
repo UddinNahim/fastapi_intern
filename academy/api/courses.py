@@ -2,6 +2,7 @@ from fastapi import APIRouter ,HTTPException ,status
 from academy.models.course import Course
 from academy.schemas.course import CourseCreate, CourseResponse , CourseUpdate,CourseView,CourseJoinView
 from typing import List
+from datetime import datetime 
 
 router = APIRouter(prefix="/courses", tags=["Courses"])
 
@@ -11,9 +12,9 @@ async def create_course(course: CourseCreate):
     await course_obj.save()
     return course_obj.to_dict()
 
-@router.get("/get-all-courses",response_model=list[CourseResponse])
-async def get_all_courses():
-    return await Course.select().run()
+# @router.get("/get-all-courses",response_model=list[CourseResponse])
+# async def get_all_courses():
+#     return await Course.select().run()
 
 @router.put("/course/{id}",response_model=CourseUpdate)
 async def update_course(id:int,course:CourseUpdate):
@@ -82,3 +83,49 @@ async def singleCourse(id:int):
 
         )
     return singleCourseQuery
+
+# @router.get("/get-all-courses_filter",response_model=list[CourseResponse])
+# async def get_all_courses_by_filter(skip: int = 0, limit: int = 10):
+
+
+#     read_all = await Course.select().run()
+
+#     return read_all[skip: skip + limit]
+
+from typing import Optional
+from fastapi import Query
+
+@router.get("/get-all-courses", response_model=list[CourseResponse])
+async def get_all_courses(
+    min_price: float |None = None,
+    
+    max_price: float |None = None,
+    min_rating: float |None = None,
+    max_rating: float |None = None,
+    start_date: datetime |None = None,
+    end_date : datetime |None = None,
+):
+    query = Course.select()
+    # print(query)
+
+    if min_price  is not None:
+        query = query.where(Course.price >= min_price) 
+
+    if max_price  is not None:
+        query = query.where(Course.price <= max_price) 
+    
+    if min_rating is not None:
+        query = query.where(Course.rating >= min_rating)
+
+    if max_rating is not None:
+        query = query.where(Course.rating <= max_rating)
+    
+    if start_date is not None:
+        query = query.where(Course.created_on >= start_date)
+    if end_date is not None:
+        query = query.where(Course.created_on <= end_date)
+
+    courses = await query.run()
+    return courses
+
+

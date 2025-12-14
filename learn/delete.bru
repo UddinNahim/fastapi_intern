@@ -1,0 +1,15 @@
+meta {
+  name: delete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: 127.0.0.1:8000/courses/delete_course/11
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

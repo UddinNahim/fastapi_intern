@@ -1,0 +1,21 @@
+meta {
+  name: get all courses
+  type: http
+  seq: 1
+}
+
+get {
+  url: 127.0.0.1:8000/courses/get-all-courses?ratings=3&search=python
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ratings: 3
+  search: python
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

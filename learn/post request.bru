@@ -1,0 +1,26 @@
+meta {
+  name: post request
+  type: http
+  seq: 2
+}
+
+post {
+  url: 127.0.0.1:8000/courses/create_course/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Blacksheep",
+    "description":"python all",
+    "instructor":"Nazrul bhai",
+    "rating":5,
+    "price":1000
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

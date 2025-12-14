@@ -1,0 +1,16 @@
+meta {
+  name: get-single-names
+  type: http
+  seq: 6
+}
+
+get {
+  url: 127.0.0.1:8000/courses/get-all-names
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -7,7 +7,7 @@ DB = PostgresEngine(
         "database": "flygeracademyDB",
         "user": "nahim",
         "password": "nahim",
-        "port": 5433,
+        "port": 5434,
     }
 )
 APP_REGISTRY = AppRegistry(apps=["academy.piccolo_app"])

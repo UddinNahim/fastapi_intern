@@ -1,5 +1,5 @@
 from piccolo.table import Table
-from piccolo.columns  import Varchar,Text, Float, Integer,Timestamptz
+from piccolo.columns  import Varchar,Text, Float, Integer,Timestamptz ,Decimal
 from datetime import datetime
 
 class Course(Table):
@@ -7,6 +7,7 @@ class Course(Table):
     description = Text()
     instructor = Varchar(length=100)
     rating = Float(default=0.0)
-    price = Integer()
+    #task 3 price data types changes Integer to Decimal
+    price = Decimal()
     created_on = Timestamptz(default=datetime.utcnow())
     

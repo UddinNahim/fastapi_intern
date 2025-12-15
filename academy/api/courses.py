@@ -102,43 +102,80 @@ async def singleCourse(id:int):
 
 
 @router.get("/get-all-courses", response_model=list[CourseResponse])
-async def get_all_courses(filters: CourseFilter = Depends()):
+async def get_all_courses(
+    min_price: float |None = None,   
+    max_price: float |None = None,
+    min_rating: float |None = None,
+    max_rating: float |None = None,
+    start_date: datetime |None = None,
+    end_date : datetime |None = None,
+    sort_by: Literal["name", "price", "rating"] = "name",
+    order: Literal["asc", "desc"] = "asc",
+
+    # ----search---
+    search: str | None = None
+):
     query = Course.select()
+    # print(query)
 
-    # filters
-    if filters.min_price is not None:
-        query = query.where(Course.price >= filters.min_price)
-    if filters.max_price is not None:
-        query = query.where(Course.price <= filters.max_price)
-    if filters.min_rating is not None:
-        query = query.where(Course.rating >= filters.min_rating)
-    if filters.max_rating is not None:
-        query = query.where(Course.rating <= filters.max_rating)
-    if filters.start_date is not None:
-        query = query.where(Course.created_on >= filters.start_date)
-    if filters.end_date is not None:
-        query = query.where(Course.created_on <= filters.end_date)
+    if min_price  is not None:
+        query = query.where(Course.price >= min_price) 
 
-    # sorting
+    if max_price  is not None:
+        query = query.where(Course.price <= max_price) 
+    
+    if min_rating is not None:
+        query = query.where(Course.rating >= min_rating)
+
+    if max_rating is not None:
+        query = query.where(Course.rating <= max_rating)
+    
+    if start_date is not None:
+        query = query.where(Course.created_on >= start_date)
+    if end_date is not None:
+        query = query.where(Course.created_on <= end_date)
+
     sort_column_map = {
         "name": Course.name,
-        "instructor": Course.instructor,
         "rating": Course.rating,
-        "price": Course.price,
+        "price": Course.price
+
     }
+    # # search_data = {
+    #     ""
+    # }
+    sort_column = sort_column_map[sort_by]
 
-    sort_column = sort_column_map[filters.sort_by]
+    # if sort_by == "name"  and order == "asc":
+    #     query =query.order_by(sort_column)
+    # if sort_by == "name"  and order == "desc":
+    #     query =query.order_by(sort_column,ascending=False) 
+    
+    if sort_by in { "name","rating" , "price",} and order == "asc":
+        query =query.order_by(sort_column)
 
-    if filters.sort_by in ["rating", "price"]:
-        query = query.order_by(sort_column.desc() if filters.order == "desc" else sort_column)
-        rows = await query.run()
-    else:
-        query = query.order_by(sort_column)
-        rows = await query.run()
-        if filters.order == "desc":
-            rows = list(reversed(rows))
+    if sort_by in { "name","rating" , "price"}  and order == "desc":
+        query =query.order_by(sort_column,ascending=False)
 
-    return rows
+
+    # --------Searching ---------------
+    # query = query.where(Course.name.(f"{search}%"))
+    if search is not None:
+         query = query.where(
+             (Course.name.ilike(f'%{search}%')) |
+             (Course.description.ilike(f'%{search}%')
+             
+             ))
+    # else:
+    #     query = query.where(Course.description.ilike(f'%{search}%'))
+
+
+
+
+
+
+    courses = await query.run()
+    return courses
 
 
 
